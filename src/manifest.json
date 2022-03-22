@@ -39,6 +39,7 @@
     "downloads",
     "activeTab",
     "notifications",
-    "storage"
+    "storage",
+    "scripting"
   ]
 }
