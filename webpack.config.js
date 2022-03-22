@@ -77,7 +77,7 @@ var options = {
       {
         test: new RegExp('.(' + fileExtensions.join('|') + ')$'),
         type: 'asset/resource',
-        exclude: /node_modules/,
+       //* exclude: /node_modules/,
         // loader: 'file-loader',
         // options: {
         //   name: '[name].[ext]',
@@ -86,9 +86,10 @@ var options = {
       {
         test: /\.html$/,
         loader: 'html-loader',
-        exclude: /node_modules/,
+        //*exclude: /node_modules/,
       },
-      { test: /\.(ts|tsx)$/, loader: 'ts-loader', exclude: /node_modules/ },
+      //* { test: /\.(ts|tsx)$/, loader: 'ts-loader', exclude: /node_modules/},
+      { test: /\.(ts|tsx)$/, loader: 'ts-loader'},
       {
         test: /\.(js|jsx)$/,
         use: [
@@ -99,7 +100,7 @@ var options = {
             loader: 'babel-loader',
           },
         ],
-        exclude: /node_modules/,
+        //*exclude: /node_modules/,
       },
     ],
   },

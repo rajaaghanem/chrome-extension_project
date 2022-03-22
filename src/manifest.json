@@ -18,7 +18,6 @@
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*", "<all_urls>"],
-      "js": ["contentScript.bundle.js"],
       "css": ["content.styles.css"]
     }
   ],
@@ -31,7 +30,8 @@
   ],
   "host_permissions": [
     "http://*/",
-    "https://*/"
+    "https://*/",
+    "<all_urls>"
   ],
   "permissions":[
     "desktopCapture",

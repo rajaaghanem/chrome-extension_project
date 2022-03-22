@@ -4,10 +4,14 @@ console.log('Put the background scripts here.');
 // chrome.actiont.onClicked.addListener((tab) => {
 //   chrome.scripting.executeScript(tab.id, { file: 'contentScript.bundle.js' });
 // });
-
-chrome.tabs.onUpdated.addListener(function (tabId, tab) {
-  chrome.scripting.executeScript({
-    files: ['contentScript.bundle.js'],
-    target: { tabId: tab.id },
-  });
+let currentUrl, currentTabId;
+chrome.tabs.onUpdated.addListener(function (tabId, {url}, tab) {
+  if(currentUrl !== url || currentTabId !== tabId){
+    chrome.scripting.executeScript({
+      files: ['contentScript.bundle.js'],
+      target: { tabId },
+    });
+    currentUrl = url;
+    currentTabId = tabId;
+  }
 });

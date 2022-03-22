@@ -71,7 +71,8 @@ function handleMouseEnter(targetElement, event) {
 
   selection = activeEl.dataset.comp;
   if (selection) {
-    renderBubble(event.pageX, event.pageY, selection);
+    renderBubble(targetElement.getBoundingClientRect().right, targetElement.getBoundingClientRect().top, selection);
+    // renderBubble(event.pageX, event.pageY, selection);
     activeEl.style.backgroundColor = "#1b888262";
     activeEl.style.boxShadow = "0 0 0 1px #32E0D6";
   }
