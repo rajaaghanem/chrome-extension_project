@@ -1,139 +1,128 @@
-import { printLine } from './modules/print';
-// import 'whatwg-fetch';
-import axios from 'axios';
+//changing background color and create a tooltip with the cmponent data-comp when hover over the component.
+function hoverAndRecording() {
 
-console.log('Content script works!');
-console.log('Must reload extension for modifications to take effect.');
+  const dataCompBubble = document.createElement('div');
+  const recordingBox = document.createElement('div');
+  const componentName = document.createElement('h3');
+  const eventsArray = [];
+  createBubble(dataCompBubble);
+  createRecordBox(recordingBox);
+  createEvents();
 
-printLine("Using the 'printLine' function from the Print Module");
-// setTimeout(async () => {
-//   try {
-//     const response = await axios({
-//       method: 'get',
-//       url: `https://bo.wix.com/jira-gateway-web/api/jira/v3/issues/ECL-4276`,
-//       headers: { 'Authorization': process.env.TOKEN, 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-//       mode: 'cors',
-      
-//     });
-//     // const data = await response.json();
-//     console.log(response);
-//   } catch (e) {
-//     const errorResult = { error: e.message, exception: e };
-//     console.log(e);
-//   }
-// }, 5000);
-
-console.log("hello I'm the script!!")
-
-// Add bubble to the top of the page.
-var bubbleDOM = document.createElement("div");
-bubbleDOM.setAttribute("class", "selection_bubble");
-bubbleDOM.style.zIndex = "1000";
-document.body.appendChild(bubbleDOM);
-
-// Add recoeding div to the selected element
-var recordDOM = document.createElement("div");
-recordDOM.setAttribute("class", "selection_record");
-recordDOM.style.zIndex = "1001";
-document.body.appendChild(recordDOM);
-var componentName = document.createElement("h3");
-recordDOM.appendChild(componentName);
-
-var activeEl = { dataset: {} };
-var eventsArray = [];
-var selection;
-// add const arr of events with map
-
-//mouseenter listener function
-var myMouseEnterListener = function (e) {
-  handleMouseEnter(this, e);
-};
-
-//mouseleave listener function
-var myMouseLeaveListener = function (e) {
-  handleMouseLeave(this, e);
-};
-
-//click listener function
-var myClickListener = function (e) {
-  renderRecordBox(e.pageX, e.pageY);
-  e.preventDefault();
-  e.stopPropagation();
-  //remove all mouse events
-  eventsArray.forEach((el) => {
-    if (el.listener === "mouseenter") {
-      el.element.removeEventListener("mouseenter", myMouseEnterListener);
-    }
-    if (el.listener === "mouseleave") {
-      el.element.removeEventListener("mouseleave", myMouseLeaveListener);
-    }
-  });
-};
-
-// add events to all data-comp elements
-document.querySelectorAll("[data-comp]").forEach((element) => {
-  
-  element.addEventListener("mouseenter", myMouseEnterListener);
-  eventsArray.push({ element, listener: "mouseenter" });
-
-  element.addEventListener("mouseleave", myMouseLeaveListener);
-  eventsArray.push({ element, listener: "mouseleave" });
-
-  element.addEventListener("click", myClickListener);
-});
-
-// handle mouseenter event
-function handleMouseEnter(targetElement, event) {
-  removeBubble(targetElement);
-  activeEl = targetElement;
-
-  selection = activeEl.dataset.comp;
-  if (selection) {
-    renderBubble(targetElement.getBoundingClientRect().right, targetElement.getBoundingClientRect().top, selection);
-    // renderBubble(event.pageX, event.pageY, selection);
-    activeEl.style.backgroundColor = "#1b888262";
-    activeEl.style.boxShadow = "0 0 0 1px #32E0D6";
+  // create a bubble element
+  function createBubble(bubbleDOM) {
+    bubbleDOM.setAttribute('class', 'selection_bubble');
+    bubbleDOM.style.zIndex = '1000';
+    bubbleDOM.style.position = 'fixed';
+    document.body.appendChild(bubbleDOM);
   }
-  event.stopPropagation();
-}
 
-// handle mouseleave event
-function handleMouseLeave(targetElement, event) {
-  removeBubble(targetElement);
-  event.stopPropagation();
-}
-
-// add a recording box to the screen
-function renderRecordBox(mouseX, mouseY) {
-  recordDOM.style.top = mouseY + "px";
-  recordDOM.style.left = mouseX + "px";
-  addTheComponentName();
-  recordDOM.style.visibility = "visible";
-}
-
-// add the selected component's name to the recording box
-function addTheComponentName(){
-  let nameArray = [];
-  if(selection){
-    nameArray = selection.split('.');
+  //create a record-box element
+  function createRecordBox(recordDOM) {
+    recordDOM = document.createElement('div');
+    recordDOM.setAttribute('class', 'selection_record');
+    recordDOM.style.zIndex = '1001';
+    recordDOM.style.position = 'fixed';
+    document.body.appendChild(recordDOM);
+    recordDOM.appendChild(componentName);
   }
-  componentName.innerText = "";
-  componentName.setAttribute("class", "selection_record-name");
-  componentName.innerText = nameArray[nameArray.length-1];
+
+  // add events to all data-comp elements and add mouse events to the events array
+  function createEvents() {
+    document.querySelectorAll('[data-comp]').forEach((element) => {
+      element.addEventListener('mouseenter', handleMouseEnter);
+      eventsArray.push({ element, listener: 'mouseenter' });
+
+      element.addEventListener('mouseleave', handleMouseLeave);
+      eventsArray.push({ element, listener: 'mouseleave' });
+
+      element.addEventListener('click', myClickListener);
+    });
+  }
+
+  //return the element data-comp name value
+  function getElementDataComp(element) {
+    return element.dataset.comp;
+  }
+
+  // handle mouseenter event : change the background color and add a data-comp name bubble
+  function handleMouseEnter(event) {
+    const targetElement = event.currentTarget;
+    event.stopPropagation();
+    removeBubble(targetElement, dataCompBubble);
+    const selection = getElementDataComp(targetElement);
+    if (selection) {
+      renderBubble(event.clientX, event.clientY, selection, dataCompBubble);
+      targetElement.style.backgroundColor = '#1b888262';
+      targetElement.style.boxShadow = '0 0 0 1px #32E0D6';
+    }
+  }
+
+  // Move that bubble to the appropriate location.
+  function renderBubble(mouseX, mouseY, selection, bubbleDOM) {
+    bubbleDOM.innerHTML = selection;
+    bubbleDOM.style.top = mouseY + 'px';
+    bubbleDOM.style.left = mouseX + 'px';
+    bubbleDOM.style.visibility = 'visible';
+  }
+
+  // handle mouseleave event : remove the data-comp name bubble
+  function handleMouseLeave(event) {
+    event.stopPropagation();
+    const targetElement = event.currentTarget;
+    removeBubble(targetElement, dataCompBubble);
+  }
+
+  //handle click event : create a recording box remove all mouse events
+  function myClickListener(event) {
+    renderRecordBox(
+      event.clientX,
+      event.clientY,
+      recordingBox,
+      event.currentTarget
+    );
+    event.preventDefault();
+    event.stopPropagation();
+
+    eventsArray.forEach((element) => {
+
+      if (element.listener === 'mouseenter') {
+        element.element.removeEventListener('mouseenter', handleMouseEnter);
+      }
+      if (element.listener === 'mouseleave') {
+        element.element.removeEventListener('mouseleave', handleMouseLeave);
+      }
+    });
+  }
+
+  // add a recording box to the screen 
+  function renderRecordBox(mouseX, mouseY, recordDOM, element) {
+    recordDOM.style.top = mouseY + 'px';
+    recordDOM.style.left = mouseX + 'px';
+    addTheComponentName(element);
+    recordDOM.style.visibility = 'visible';
+  }
+
+  // add the selected component's name to the recording box
+  function addTheComponentName(element) {
+    let nameArray = [];
+    const selection = getElementDataComp(element);
+
+    if (selection) {
+      nameArray = selection.split('.');
+    }
+
+    componentName.innerText = '';
+    componentName.setAttribute('class', 'selection_record-name');
+    componentName.innerText = nameArray[nameArray.length - 1];
+  }
+
+  // remove background blue color and boxshadow
+  function removeBubble(element, bubbleDOM) {
+    element.style.backgroundColor = 'transparent';
+    element.style.boxShadow = 'none';
+    bubbleDOM.style.visibility = 'hidden';
+  }
 }
 
-// remove background blue color and boxshadow
-function removeBubble(element) {
-  element.style.backgroundColor = "transparent";
-  element.style.boxShadow = "none";
-  bubbleDOM.style.visibility = "hidden";
-}
-
-// Move that bubble to the appropriate location.
-function renderBubble(mouseX, mouseY, selection) {
-  bubbleDOM.innerHTML = selection;
-  bubbleDOM.style.top = mouseY + "px";
-  bubbleDOM.style.left = mouseX + "px";
-  bubbleDOM.style.visibility = "visible";
-}
-
+hoverAndRecording();
