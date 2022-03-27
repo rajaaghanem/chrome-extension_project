@@ -14,9 +14,16 @@
   },
   "dependencies": {
     "@hot-loader/react-dom": "^17.0.2",
+    "@vespaiach/axios-fetch-adapter": "^0.2.0",
+    "axios": "^0.21.1",
+    "dotenv": "^16.0.0",
+    "os-browserify": "^0.3.0",
+    "path-browserify": "^1.0.1",
+    "process": "^0.11.10",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-hot-loader": "^4.13.0"
+    "react-hot-loader": "^4.13.0",
+    "whatwg-fetch": "^3.6.2"
   },
   "devDependencies": {
     "@babel/core": "^7.17.0",
@@ -32,6 +39,7 @@
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^7.0.0",
     "css-loader": "^6.6.0",
+    "dotenv-webpack": "^7.1.0",
     "eslint": "^8.8.0",
     "eslint-config-react-app": "^7.0.0",
     "eslint-plugin-flowtype": "^8.0.3",

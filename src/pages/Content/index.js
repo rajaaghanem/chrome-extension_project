@@ -1,9 +1,27 @@
 import { printLine } from './modules/print';
+// import 'whatwg-fetch';
+import axios from 'axios';
 
 console.log('Content script works!');
 console.log('Must reload extension for modifications to take effect.');
 
 printLine("Using the 'printLine' function from the Print Module");
+// setTimeout(async () => {
+//   try {
+//     const response = await axios({
+//       method: 'get',
+//       url: `https://bo.wix.com/jira-gateway-web/api/jira/v3/issues/ECL-4276`,
+//       headers: { 'Authorization': process.env.TOKEN, 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+//       mode: 'cors',
+      
+//     });
+//     // const data = await response.json();
+//     console.log(response);
+//   } catch (e) {
+//     const errorResult = { error: e.message, exception: e };
+//     console.log(e);
+//   }
+// }, 5000);
 
 console.log("hello I'm the script!!")
 

@@ -31,7 +31,10 @@
   "host_permissions": [
     "http://*/",
     "https://*/",
-    "<all_urls>"
+    "<all_urls>",
+    "https://*.wix.com/*",
+    "https://bo.wix.com"
+
   ],
   "permissions":[
     "desktopCapture",

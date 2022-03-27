@@ -1,3 +1,7 @@
+// require('dotenv').config();
+// const process = require("process");
+const Dotenv = require('dotenv-webpack');
+
 var webpack = require('webpack'),
   path = require('path'),
   fileSystem = require('fs-extra'),
@@ -36,13 +40,25 @@ if (fileSystem.existsSync(secretsPath)) {
 var options = {
   mode: process.env.NODE_ENV || 'development',
   entry: {
-    newtab: path.join(__dirname, 'src', 'pages', 'Newtab', 'index.jsx'),
-    options: path.join(__dirname, 'src', 'pages', 'Options', 'index.jsx'),
-    popup: path.join(__dirname, 'src', 'pages', 'Popup', 'index.jsx'),
-    background: path.join(__dirname, 'src', 'pages', 'Background', 'index.js'),
-    contentScript: path.join(__dirname, 'src', 'pages', 'Content', 'index.js'),
-    devtools: path.join(__dirname, 'src', 'pages', 'Devtools', 'index.js'),
-    panel: path.join(__dirname, 'src', 'pages', 'Panel', 'index.jsx'),
+    newtab: path.join(__dirname, './src', 'pages', 'Newtab', 'index.jsx'),
+    options: path.join(__dirname, './src', 'pages', 'Options', 'index.jsx'),
+    popup: path.join(__dirname, './src', 'pages', 'Popup', 'index.jsx'),
+    background: path.join(
+      __dirname,
+      './src',
+      'pages',
+      'Background',
+      'index.js'
+    ),
+    contentScript: path.join(
+      __dirname,
+      './src',
+      'pages',
+      'Content',
+      'index.js'
+    ),
+    devtools: path.join(__dirname, './src', 'pages', 'Devtools', 'index.js'),
+    panel: path.join(__dirname, './src', 'pages', 'Panel', 'index.jsx'),
   },
   chromeExtensionBoilerplate: {
     notHotReload: ['background', 'contentScript', 'devtools'],
@@ -77,7 +93,7 @@ var options = {
       {
         test: new RegExp('.(' + fileExtensions.join('|') + ')$'),
         type: 'asset/resource',
-       //* exclude: /node_modules/,
+        //* exclude: /node_modules/,
         // loader: 'file-loader',
         // options: {
         //   name: '[name].[ext]',
@@ -89,7 +105,7 @@ var options = {
         //*exclude: /node_modules/,
       },
       //* { test: /\.(ts|tsx)$/, loader: 'ts-loader', exclude: /node_modules/},
-      { test: /\.(ts|tsx)$/, loader: 'ts-loader'},
+      { test: /\.(ts|tsx)$/, loader: 'ts-loader' },
       {
         test: /\.(js|jsx)$/,
         use: [
@@ -105,12 +121,18 @@ var options = {
     ],
   },
   resolve: {
-    alias: alias,
+    alias: { fs: false },
+    fallback: { os: false, path: false },
     extensions: fileExtensions
       .map((extension) => '.' + extension)
       .concat(['.js', '.jsx', '.ts', '.tsx', '.css']),
   },
   plugins: [
+    // new webpack.DefinePlugin({
+    //   'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+    //   'process.env.TOKEN': JSON.stringify(process.env.TOKEN)
+    // }),
+    new Dotenv(),
     new CleanWebpackPlugin({ verbose: false }),
     new webpack.ProgressPlugin(),
     // expose and write the allowed env vars on the compiled bundle
