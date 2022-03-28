@@ -1,3 +1,4 @@
+import '../Content/content.styles.css'
 //changing background color and create a tooltip with the cmponent data-comp when hover over the component.
 function hoverAndRecording() {
 
@@ -19,7 +20,6 @@ function hoverAndRecording() {
 
   //create a record-box element
   function createRecordBox(recordDOM) {
-    recordDOM = document.createElement('div');
     recordDOM.setAttribute('class', 'selection_record');
     recordDOM.style.zIndex = '1001';
     recordDOM.style.position = 'fixed';
@@ -42,7 +42,10 @@ function hoverAndRecording() {
 
   //return the element data-comp name value
   function getElementDataComp(element) {
-    return element.dataset.comp;
+    let nameArray = [];
+    const selection = element.dataset.comp;
+    nameArray = selection.split('.');
+    return nameArray[nameArray.length - 1];;
   }
 
   // handle mouseenter event : change the background color and add a data-comp name bubble
@@ -75,14 +78,15 @@ function hoverAndRecording() {
 
   //handle click event : create a recording box remove all mouse events
   function myClickListener(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
     renderRecordBox(
       event.clientX,
       event.clientY,
       recordingBox,
       event.currentTarget
     );
-    event.preventDefault();
-    event.stopPropagation();
 
     eventsArray.forEach((element) => {
 
@@ -105,16 +109,12 @@ function hoverAndRecording() {
 
   // add the selected component's name to the recording box
   function addTheComponentName(element) {
-    let nameArray = [];
+    
     const selection = getElementDataComp(element);
-
-    if (selection) {
-      nameArray = selection.split('.');
-    }
-
     componentName.innerText = '';
     componentName.setAttribute('class', 'selection_record-name');
-    componentName.innerText = nameArray[nameArray.length - 1];
+    componentName.innerText = selection;
+
   }
 
   // remove background blue color and boxshadow
