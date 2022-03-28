@@ -16,4 +16,22 @@
   border: 1px solid white;
   padding: 0.4rem;
   border-radius: 0.3rem;
+  position: flex;
+  flex-direction: column;
+}
+
+.selection_record div {
+  height: 2rem;
+  color: white;
+  padding: 1rem;
+}
+
+.selection_record p {
+  padding: 0.5rem;
+  color: gray;
+  font-size: 0.7rem;
+}
+
+.selection_record button {
+  cursor: pointer;
 }
