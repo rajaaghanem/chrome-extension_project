@@ -1,12 +1,12 @@
 import 'regenerator-runtime/runtime.js';
 import axios from 'axios';
 import fetchAdapter from '@vespaiach/axios-fetch-adapter';
+import { createQAUrl } from '../Content/utiles/utiles.js';
 console.log('This is the background page.');
 
 // chrome.actiont.onClicked.addListener((tab) => {
 //   chrome.scripting.executeScript(tab.id, { file: 'contentScript.bundle.js' });
 // });
-
 
 let currentUrl, currentTabId;
 chrome.tabs.onUpdated.addListener(function (tabId, { url }, tab) {
@@ -20,6 +20,29 @@ chrome.tabs.onUpdated.addListener(function (tabId, { url }, tab) {
   }
 });
 
+// send message to the contentScript if the url doesn't include isqa=true and create new url with isqa=true
+chrome.tabs.onUpdated.addListener((tabId) => {
+  chrome.tabs.query({ active: true, lastFocusedWindow: true }, async (tabs) => {
+    let url = await tabs[0].url;
+    console.log(url);
+    if (!url.includes('isqa=true')) {
+      const newUrl = createQAUrl(url);
+      chrome.tabs.sendMessage(
+        tabId,
+        { name: 'newUrl' },
+        ({ success, error }) => {
+          if (!success) {
+            console.log(error);
+            return;
+          }
+          chrome.tabs.create({ url: newUrl });
+        }
+      );
+    } else {
+      chrome.tabs.sendMessage(tabId, { name: 'currentUrl' });
+    }
+  });
+});
 
 // setTimeout(async () => {
 //   const obj = {

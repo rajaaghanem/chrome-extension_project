@@ -1,4 +1,5 @@
 import '../Content/content.styles.css';
+import {createQAUrl} from './utiles/utiles.js';
 
 
 //changing background color and create a tooltip with the cmponent data-comp when hover over the component.
@@ -207,4 +208,15 @@ function hoverAndRecording() {
   }
 }
 
-hoverAndRecording();
+// hoverAndRecording();
+
+// listen to the background messages, display a confirm prompt to the user to redirect him to url+isqa=true and send his respond to the background
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.name === "newUrl"){
+    if (window.confirm('Do you want to be redircted to the url+isqa=true?')){
+      sendResponse({ success: true });
+    }
+  } else if(message.name === "currentUrl"){
+    hoverAndRecording();
+  }
+})
