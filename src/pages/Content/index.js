@@ -125,10 +125,9 @@ function hoverAndRecording() {
   }
 
   //return the element data-comp name value
-  function getElementDataComp(element) {
-    let nameArray = [];
-    const selection = element.dataset.comp;
-    nameArray = selection.split('.');
+  function getCompType(element) {
+    const dataComp = element.dataset.comp;
+    const nameArray = dataComp.split('.');
     return nameArray[nameArray.length - 1];
   }
 
@@ -137,7 +136,7 @@ function hoverAndRecording() {
     const targetElement = event.currentTarget;
     event.stopPropagation();
     removeBubble(targetElement, dataCompBubble);
-    const selection = getElementDataComp(targetElement);
+    const selection = getCompType(targetElement);
     if (selection) {
       renderBubble(event.clientX, event.clientY, selection, dataCompBubble);
       targetElement.style.backgroundColor = '#1b888262';
@@ -192,7 +191,7 @@ function hoverAndRecording() {
 
   // add the selected component's name to the recording box
   function addTheComponentName(element) {
-    const selection = getElementDataComp(element);
+    const selection = getCompType(element);
     componentName.innerText = '';
     componentName.setAttribute('class', 'selection_record-name');
     componentName.innerText = selection;
