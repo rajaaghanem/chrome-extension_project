@@ -15,7 +15,7 @@ const Popup = () => {
   const [status, setStatus] = useState("initializing");
   const [url, setUrl] = useState();
 
-  //Set statue to "redirect" if the current tab url doesn't contain "isqa=true", otherwise inject the contentScript to the current tab.
+  //Set status to "redirect" if the current tab url doesn't contain "isqa=true", otherwise inject the contentScript to the current tab.
   useEffect(() => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       console.log(tabs);
