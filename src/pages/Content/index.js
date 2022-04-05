@@ -1,4 +1,5 @@
 import '../Content/content.styles.css';
+import { specialQAComp } from '../Content/utiles/utiles.js';
 
 //changing background color and create a tooltip with the cmponent data-comp when hover over the component.
 function hoverAndRecording() {
@@ -59,14 +60,24 @@ function hoverAndRecording() {
   // add events to all data-comp elements and add mouse events to the events array
   function createEvents() {
     document.querySelectorAll('[data-comp]').forEach((element) => {
-      element.addEventListener('mouseenter', handleMouseEnter);
-      eventsArray.push({ element, listener: 'mouseenter' });
+      if (!isSpecialQAComp(element)) {
+        element.addEventListener('mouseenter', handleMouseEnter);
+        eventsArray.push({ element, listener: 'mouseenter' });
 
-      element.addEventListener('mouseleave', handleMouseLeave);
-      eventsArray.push({ element, listener: 'mouseleave' });
+        element.addEventListener('mouseleave', handleMouseLeave);
+        eventsArray.push({ element, listener: 'mouseleave' });
 
-      element.addEventListener('click', myClickListener);
+        element.addEventListener('click', myClickListener);
+      }
     });
+  }
+
+  // return true if the component is a special QA Component, otherwise return false
+  function isSpecialQAComp(element) {
+    const dataComp = element.dataset.comp;
+    if (specialQAComp.has(dataComp)) {
+      return true;
+    } else return false;
   }
 
   // start recording by clicking the recording button
