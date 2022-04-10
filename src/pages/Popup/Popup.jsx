@@ -81,9 +81,9 @@ const Popup = () => {
     });
   }
 
-  //depends on state different values display tags on popup window
+  //Depends on state different values display tags on popup window
   function popupContent() {
-    if (!jiraLogIn) return <a>Please log-in in Jira</a>;
+    if (!jiraLogIn) return <a href="https://jira.wixpress.com/" target="_blank" rel="noreferrer">Please log-in in Jira</a>;
     else if (!wixSite) return <div>Not a wix site</div>;
     else if (status === 'redirect')
       return <button onClick={handleRedirect}>redirect to isqua url</button>;
