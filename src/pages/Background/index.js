@@ -2,8 +2,30 @@ import 'regenerator-runtime/runtime.js';
 import axios from 'axios';
 import fetchAdapter from '@vespaiach/axios-fetch-adapter';
 
-console.log('This is the background page.');
+//Make an axios requset using JIRA API, Return true if the current user is looged-in to JIRA, otherwise return false
+async function jiraLoggedin() {
+  try {
+    const res = await axios.get(`https://jira.wixpress.com/rest/api/2/myself`, {
+      withCredentials: true,
+      headers: { crossorigin: true, 'Access-Control-Allow-Headers': '*' },
+      adapter: fetchAdapter,
+    });
+    if (res.status === 200) return true;
+  } catch (e) {
+    return false;
+  }
+}
 
+//Connect to the port and listening to messages, send back the JIRA API current user request response
+chrome.runtime.onConnect.addListener(function(port) {
+    port.onMessage.addListener(async function(msg) {
+        const res = await jiraLoggedin();
+         port.postMessage({result: res});
+    });
+})
+
+
+//for future useage
 // setTimeout(async () => {
 //   const obj = {
 //     fields: {

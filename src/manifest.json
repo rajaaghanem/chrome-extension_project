@@ -15,7 +15,8 @@
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*", "<all_urls>"],
-      "css": ["content.styles.css"]
+      "css": ["content.styles.css"],
+      "js": ["devtools.bundle.js"]
     }
   ],
   "devtools_page": "devtools.html",
@@ -42,6 +43,7 @@
     "notifications",
     "storage",
     "scripting",
-    "cookies"
+    "cookies",
+    "alarms"
   ]
 }
