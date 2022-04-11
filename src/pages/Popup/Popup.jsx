@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { createQAUrl } from '../Content/utiles/utiles.js';
+import { createQAUrl } from '../Content/utils/utils.js';
 import './Popup.css';
 
 //Inject the content-script to tab
@@ -15,41 +15,39 @@ const Popup = () => {
 
   const [status, setStatus] = useState('initializing');
   const [url, setUrl] = useState();
-  const [wixSite, setWixSite] = useState(false);
-  const [jiraLogIn, setJiraLogIn] = useState(false);
+  const [isWixSite, setIsWixSite] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   //Set jiraLogIn to true if the user is logged-in in JIRA
   useEffect(() => {
-    var port = chrome.runtime.connect({
-      name: 'Sample Communication',
-    });
-    port.postMessage('Hi BackGround');
+    const port = chrome.runtime.connect();
+    port.postMessage({type: 'login'});
     port.onMessage.addListener(function (msg) {
-      setJiraLogIn(msg.result);
+      setIsLoggedIn(msg.result);
     });
   }, []);
 
   //Set status to "redirect" if the current tab url doesn't contain "isqa=true", otherwise inject the contentScript to the current tab.
   useEffect(() => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      let currentUrl = tabs[0].url;
+      const currentUrl = tabs[0].url;
       setUrl(currentUrl);
       let tabId = tabs[0].id;
-      handleIsWixSite(tabs, currentUrl, tabId)
+      handleIsWixSite(currentUrl, tabId)
     });
-  }, [jiraLogIn, setJiraLogIn]);
+  }, [isLoggedIn, setIsLoggedIn]);
 
   //Sending and recieving message from content-script, recieving success if the site is a wix site
-  function handleIsWixSite(tabs, currentUrl, tabId){
+  function handleIsWixSite(currentUrl, tabId){
     chrome.tabs.sendMessage(
-      tabs[0].id,
-      { name: 'start' },
+      tabId,
+      { type: 'init' },
       ({ success, error }) => {
         if (!success) {
-          console.log(error);
+          console.error(error);
           return;
         }
-        setWixSite(true);
+        setIsWixSite(true);
         handleIsQaURL(currentUrl, tabId);
       }
     );
@@ -59,12 +57,11 @@ const Popup = () => {
   function handleIsQaURL(currentUrl, tabId){
     if (!currentUrl.includes('isqa=true')) {
       setStatus('redirect');
-    } else {
-      if (jiraLogIn) {
+    } else if (isLoggedIn) {
         injectContentScript(tabId);
         window.close();
       }
-    }
+    
   }
 
   //Create and open a new tab with adding 'isqa=true' to url
@@ -83,10 +80,10 @@ const Popup = () => {
 
   //Depends on state different values display tags on popup window
   function popupContent() {
-    if (!jiraLogIn) return <a href="https://jira.wixpress.com/" target="_blank" rel="noreferrer">Please log-in in Jira</a>;
-    else if (!wixSite) return <div>Not a wix site</div>;
+    if (!isLoggedIn) return <a href="https://jira.wixpress.com/" target="_blank" rel="noreferrer">Please log-in in Jira</a>;
+    else if (!isWixSite) return <div>Not a wix site</div>;
     else if (status === 'redirect')
-      return <button onClick={handleRedirect}>redirect to isqua url</button>;
+      return <button onClick={handleRedirect}>redirect to isqa url</button>;
     else return <div>loading...</div>;
   }
 

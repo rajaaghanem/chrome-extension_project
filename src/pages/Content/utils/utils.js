@@ -6,7 +6,7 @@ export function createQAUrl(address) {
   return url.toString();
 }
 
-//Set of the special QA Components
+//Set of the components that should be ignored when picking component for JIRA ticket
 export const specialQAComp = new Set();
 
 const specialQACompArray = [

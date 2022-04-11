@@ -1,5 +1,5 @@
 import '../Content/content.styles.css';
-import { specialQAComp } from '../Content/utiles/utiles.js';
+import { specialQAComp } from '../Content/utils/utils.js';
 
 //changing background color and create a tooltip with the cmponent data-comp when hover over the component.
 function hoverAndRecording() {
